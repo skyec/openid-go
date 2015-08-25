@@ -1,5 +1,7 @@
 package openid
 
+import "log"
+
 // 7.3.1.  Discovered Information
 // Upon successful completion of discovery, the Relying Party will
 // have one or more sets of the following information (see the
@@ -26,6 +28,7 @@ const identifierSelect = "http://specs.openid.net/auth/2.0/identifier_select"
 
 // Same as the above public Discover function, but test-friendly.
 func discover(id string, getter httpGetter) (opEndpoint, opLocalID, claimedID string, err error) {
+	log.Println("discover:", id)
 	// From OpenID specs, 7.3: Discovery.
 
 	// If the identifier is an XRI, [XRI_Resolution_2.0] will yield an
@@ -40,15 +43,18 @@ func discover(id string, getter httpGetter) (opEndpoint, opLocalID, claimedID st
 	// If it is a URL, the Yadis protocol [Yadis] SHALL be first
 	// attempted. If it succeeds, the result is again an XRDS
 	// document.
+	log.Println("do yadisDiscovery")
 	if opEndpoint, opLocalID, err = yadisDiscovery(id, getter); err != nil {
 		// If the Yadis protocol fails and no valid XRDS document is
 		// retrieved, or no Service Elements are found in the XRDS
 		// document, the URL is retrieved and HTML-Based discovery SHALL be
 		// attempted.
+		log.Println("do htmlDiscovery")
 		opEndpoint, opLocalID, claimedID, err = htmlDiscovery(id, getter)
 	}
 
 	if err != nil {
+		log.Println("discovery error:", err)
 		return "", "", "", err
 	}
 

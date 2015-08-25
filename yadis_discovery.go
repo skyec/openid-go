@@ -4,6 +4,7 @@ import (
 	"errors"
 	"io"
 	"io/ioutil"
+	"log"
 	"strings"
 
 	"golang.org/x/net/html"
@@ -22,6 +23,7 @@ func yadisDiscovery(id string, getter httpGetter) (opEndpoint string, opLocalID 
 	// A GET or HEAD request MAY include an HTTP Accept
 	// request-header (HTTP 14.1) specifying MIME media type,
 	// application/xrds+xml.
+	log.Println("Yadis Discover ...")
 	resp, err := getter.Get(id, yadisHeaders)
 	if err != nil {
 		return "", "", err
